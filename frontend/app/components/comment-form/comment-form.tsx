@@ -1,6 +1,7 @@
-import { h, Component, createRef, Fragment } from 'preact';
+import { h, Fragment, Component, createRef } from 'preact';
 import { FormattedMessage, IntlShape, defineMessages } from 'react-intl';
 import b, { Mix } from 'bem-react-helper';
+import classnames from 'classnames';
 
 import { User, Theme, Image, ApiError } from 'common/types';
 import { StaticStore } from 'common/static-store';
@@ -20,6 +21,8 @@ import { SubscribeByRSS } from './__subscribe-by-rss';
 import MarkdownToolbar from './markdown-toolbar';
 import TextareaAutosize from './textarea-autosize';
 import { TextExpander } from './text-expander';
+import { ReactComponent as MarkdownIcon } from './assets/markdown.svg';
+import styles from './comment-form.module.css';
 
 let textareaId = 0;
 
@@ -95,6 +98,10 @@ export const messages = defineMessages({
     id: 'commentForm.anonymous-uploading-disabled',
     defaultMessage:
       'Image uploading is disabled for anonymous users. Please log in not as anonymous user to be able to attach images.',
+  },
+  markdownSupport: {
+    id: 'commentForm.notice-about-styling',
+    defaultMessage: 'Styling with Markdown is supported',
   },
 });
 
@@ -425,19 +432,14 @@ export class CommentForm extends Component<CommentFormProps, CommentFormState> {
   }
 
   renderMarkdownTip = () => (
-    <div className="comment-form__markdown">
-      <FormattedMessage
-        id="commentForm.notice-about-styling"
-        defaultMessage="Styling with <a>Markdown</a> is supported"
-        values={{
-          a: (title: string) => (
-            <a class="comment-form__markdown-link" target="_blank" href="markdown-help.html">
-              {title}
-            </a>
-          ),
-        }}
-      />
-    </div>
+    <a
+      className={classnames('markdown-link', styles.markdownTip)}
+      target="_blank"
+      href="markdown-help.html"
+      title={this.props.intl.formatMessage(messages.markdownSupport)}
+    >
+      <MarkdownIcon className={classnames('markdown-link-icon', styles.markdownTipIcon)} />
+    </a>
   );
 
   render() {
