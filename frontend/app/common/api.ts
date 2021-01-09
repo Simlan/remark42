@@ -24,9 +24,9 @@ const __loginViaEmail = (token: string): Promise<User | null> => authFetcher.get
 export const sendEmailVerificationRequest = (username: string, address: string): Promise<void> =>
   authFetcher.get('/email/login', { id: siteId, user: username, address });
 
-export const logIn = (provider: AuthProvider): Promise<User | null> => {
-  if (provider.name === 'anonymous') return __loginAnonymously(provider.username);
-  if (provider.name === 'email') return __loginViaEmail(provider.token);
+export const logIn = (provider: { name: string; username?: string; token?: string }): Promise<User | null> => {
+  if (provider.name === 'anonymous') return __loginAnonymously(provider.username!);
+  if (provider.name === 'email') return __loginViaEmail(provider.token!);
 
   return new Promise<User | null>((resolve, reject) => {
     const queryString = new URLSearchParams({ from: FROM_URL, site: siteId });
