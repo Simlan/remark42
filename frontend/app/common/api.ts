@@ -40,20 +40,8 @@ export const logIn = (provider: { name: string; username?: string; token?: strin
         shouldProceed = (newWindow && newWindow.closed) || secondsPass > 30000;
       } catch (e) {}
 
-      if (shouldProceed) {
-        clearInterval(checkInterval);
-
-        getUser()
-          .then((user) => {
-            resolve(user);
-          })
-          .catch(() => {
-            reject(new Error('User logIn Error'));
-          });
-      }
-    }, checkMsDelay);
-  });
-};
+export const getCommentsCount = (urls: string[]): Promise<{ url: string; count: number }[]> =>
+  fetcher.post('/counts', { json: urls });
 
 export const logOut = (): Promise<void> => authFetcher.get('/logout');
 
