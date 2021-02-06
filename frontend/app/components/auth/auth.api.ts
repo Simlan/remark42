@@ -1,39 +1,32 @@
 import type { User } from 'common/types';
 
-import fetcher from 'common/fetcher';
+import { authFetcher } from 'common/fetcher';
 import { getUser } from 'common/api';
 import { siteId } from 'common/settings';
 
-export function stringifyUrl(url: string, params: Record<string, string>) {
-  const queryString = Object.entries(params)
-    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-    .join('&');
+const FROM_URL = `${window.location.origin}${window.location.pathname}?selfClose`;
+const EMAIL_SIGNIN_ENDPOINT = '/email/login';
 
-  return `${url}?${queryString}`;
-}
-
-export function anonymousSignin(username: string): Promise<User> {
-  const url = stringifyUrl('/auth/anonymous/login', {
-    from: `${window.location.origin}${window.location.pathname}?selfClose`,
-    user: username,
+export function anonymousSignin(user: string): Promise<User> {
+  return authFetcher.get<User>('/anonymous/login', {
+    user,
     aud: siteId,
+    from: FROM_URL,
   });
-
-  return fetcher.get(url, { overriddenApiBase: '' });
 }
-
-const EMAIL_SIGNIN_ENDPOINT = '/auth/email/login';
 
 export function emailSignin(email: string, username: string): Promise<unknown> {
-  const url = stringifyUrl(EMAIL_SIGNIN_ENDPOINT, { address: email, user: username });
-
-  return fetcher.get(url, { overriddenApiBase: '' });
+  return authFetcher.get(EMAIL_SIGNIN_ENDPOINT, { address: email, user: username });
 }
 
+/**
+ * First step of two of `email` authorization
+ *
+ * @param username userrname
+ * @param address email address
+ */
 export function verifyEmailSignin(token: string): Promise<User> {
-  const url = stringifyUrl(EMAIL_SIGNIN_ENDPOINT, { token });
-
-  return fetcher.get(url, { overriddenApiBase: '' });
+  return authFetcher.get(EMAIL_SIGNIN_ENDPOINT, { token });
 }
 
 const REVALIDATION_TIMEOUT = 60 * 1000; // 1min
@@ -78,4 +71,8 @@ export function oauthSignin(url: string) {
   lastAttemptTime = 0;
   window.open(url);
   lastAttemptTime = Date.now() - REVALIDATION_TIMEOUT;
+}
+
+export function logout(): Promise<void> {
+  return authFetcher.get('/logout');
 }

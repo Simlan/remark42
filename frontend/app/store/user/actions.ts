@@ -17,10 +17,10 @@ import {
   USER_SUBSCRIPTION_SET,
   USER_SET_ACTION,
 } from './types';
-import { unsetCommentMode, fetchComments } from '../comments/actions';
+import { fetchComments } from '../comments/actions';
 import { COMMENTS_PATCH } from '../comments/types';
 
-function setUser(user: User | null = null): USER_SET_ACTION {
+export function setUser(user: User | null = null): USER_SET_ACTION {
   return {
     type: USER_SET,
     user,
@@ -36,12 +36,6 @@ export const fetchUser = (): StoreAction<Promise<User | null>> => async (dispatc
 export const signin = (user: User): StoreAction<Promise<void>> => async (dispatch) => {
   dispatch(setUser(user));
   dispatch(fetchComments());
-};
-
-export const logout = (): StoreAction<Promise<void>> => async (dispatch) => {
-  await api.logout();
-  dispatch(unsetCommentMode());
-  dispatch(setUser());
 };
 
 export const fetchBlockedUsers = (): StoreAction<Promise<BlockedUser[]>> => async (dispatch) => {

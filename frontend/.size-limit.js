@@ -13,7 +13,7 @@ module.exports = [
   },
   {
     path: 'public/last-comments.mjs',
-    limit: '35 KB',
+    limit: '32 KB',
   },
   {
     path: 'public/last-comments.css',

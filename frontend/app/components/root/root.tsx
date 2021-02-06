@@ -16,8 +16,16 @@ import {
 import { maxShownComments, url } from 'common/settings';
 
 import { StaticStore } from 'common/static-store';
-import { fetchUser, logout, blockUser, unblockUser, fetchBlockedUsers, hideUser, unhideUser } from 'store/user/actions';
-import { fetchComments, updateSorting, addComment, updateComment } from 'store/comments/actions';
+import {
+  setUser,
+  fetchUser,
+  blockUser,
+  unblockUser,
+  fetchBlockedUsers,
+  hideUser,
+  unhideUser,
+} from 'store/user/actions';
+import { fetchComments, updateSorting, addComment, updateComment, unsetCommentMode } from 'store/comments/actions';
 import { setCommentsReadOnlyState } from 'store/post-info/actions';
 import { setTheme } from 'store/theme/actions';
 
@@ -34,6 +42,7 @@ import { bindActions } from 'utils/actionBinder';
 import postMessage from 'utils/postMessage';
 import { useActions } from 'hooks/useAction';
 import { setCollapse } from 'store/thread/actions';
+import { logout } from 'components/auth/auth.api';
 
 import styles from './root.module.css';
 
@@ -62,9 +71,9 @@ const mapStateToProps = (state: StoreState) => ({
 const boundActions = bindActions({
   updateSorting,
   fetchComments,
+  setUser,
   fetchUser,
   fetchBlockedUsers,
-  logout,
   setTheme,
   setCommentsReadOnlyState,
   blockUser,
@@ -74,6 +83,7 @@ const boundActions = bindActions({
   addComment,
   updateComment,
   setCollapse,
+  unsetCommentMode,
 });
 
 type Props = ReturnType<typeof mapStateToProps> & typeof boundActions & { intl: IntlShape };
@@ -138,7 +148,9 @@ export class Root extends Component<Props, State> {
   };
 
   logout = async () => {
-    await this.props.logout();
+    await logout();
+    this.props.setUser();
+    this.props.unsetCommentMode();
     localStorage.removeItem(LS_EMAIL_KEY);
     await this.props.fetchComments();
   };
