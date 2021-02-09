@@ -1,18 +1,12 @@
 import type { User } from 'common/types';
 
-import { authFetcher } from 'common/fetcher';
 import { getUser } from 'common/api';
-import { siteId } from 'common/settings';
+import { authFetcher } from 'common/fetcher';
 
-const FROM_URL = `${window.location.origin}${window.location.pathname}?selfClose`;
 const EMAIL_SIGNIN_ENDPOINT = '/email/login';
 
 export function anonymousSignin(user: string): Promise<User> {
-  return authFetcher.get<User>('/anonymous/login', {
-    user,
-    aud: siteId,
-    from: FROM_URL,
-  });
+  return authFetcher.get<User>('/anonymous/login', { user });
 }
 
 export function emailSignin(email: string, username: string): Promise<unknown> {
@@ -29,48 +23,54 @@ export function verifyEmailSignin(token: string): Promise<User> {
   return authFetcher.get(EMAIL_SIGNIN_ENDPOINT, { token });
 }
 
-const REVALIDATION_TIMEOUT = 60 * 1000; // 1min
-let lastAttemptTime = Date.now();
-
-export function userUpdater() {
-  let currentRequest: Promise<User | null> | null = null;
-
-  async function handleVisibilityChange() {
-    if (!window.navigator.onLine) {
-      console.log('offline');
-      return;
-    }
-    if (document.hidden) {
-      console.log('hidden');
-      return;
-    }
-    if (currentRequest) {
-      console.log('request in progress');
-    }
-    if (Date.now() - lastAttemptTime < REVALIDATION_TIMEOUT) {
-      console.log(Date.now() - lastAttemptTime - REVALIDATION_TIMEOUT);
-      return;
-    }
-
-    const resetOnEnd = () => {
-      currentRequest = null;
-    };
-
-    console.log('Try to revalidate user');
-    currentRequest = getUser();
-    currentRequest.then(resetOnEnd).catch(resetOnEnd);
-    lastAttemptTime = Date.now();
-  }
-
-  handleVisibilityChange();
-
-  window.addEventListener('visibilitychange', handleVisibilityChange);
-}
-
 export function oauthSignin(url: string) {
-  lastAttemptTime = 0;
-  window.open(url);
-  lastAttemptTime = Date.now() - REVALIDATION_TIMEOUT;
+  const REVALIDATION_TIMEOUT = 60 * 1000; // 1min
+  let lastAttemptTime = Date.now();
+  let authWindow: Window | null = null;
+
+  (function userUpdater(): void {
+    let currentRequest: Promise<User | null> | null = null;
+
+    async function handleVisibilityChange(): Promise<void> {
+      if (!authWindow?.closed) {
+        console.log("auth haven't compleated");
+
+        return;
+      }
+      if (!window.navigator.onLine) {
+        console.log('offline');
+        return;
+      }
+      if (document.hidden) {
+        console.log('hidden');
+        return;
+      }
+      if (currentRequest) {
+        console.log('request in progress');
+      }
+      if (Date.now() - lastAttemptTime < REVALIDATION_TIMEOUT) {
+        // console.log(Date.now() - lastAttemptTime - REVALIDATION_TIMEOUT);
+        return;
+      }
+
+      const resetOnEnd = () => {
+        currentRequest = null;
+      };
+
+      console.log('Try to revalidate user');
+      currentRequest = getUser();
+      currentRequest.then(resetOnEnd).catch(resetOnEnd);
+      lastAttemptTime = Date.now();
+    }
+
+    handleVisibilityChange();
+    window.addEventListener('visibilitychange', handleVisibilityChange);
+  })();
+
+  return function oauthSignin() {
+    authWindow = window.open(url);
+    lastAttemptTime = Date.now();
+  };
 }
 
 export function logout(): Promise<void> {

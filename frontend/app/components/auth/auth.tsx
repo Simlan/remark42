@@ -10,15 +10,13 @@ import capitalizeFirstLetter from 'utils/capitalize-first-letter';
 
 import messages from './auth.messsages';
 import { useDropdown } from './auth.hooks';
-import { anonymousSignin, emailSignin, oauthSignin, verifyEmailSignin, userUpdater } from './auth.api';
+import { anonymousSignin, emailSignin, oauthSignin, verifyEmailSignin } from './auth.api';
 import { getProviders, getTokenInvalidReason, getEmailInvalidReason, getUsernameInvalidReason } from './auth.utils';
 import InputField from './components/input-field';
 import OAuthButton from './components/oauth-button';
 
 import styles from './auth.module.css';
 import { signin } from 'store/user/actions';
-
-userUpdater();
 
 const Auth: FunctionComponent = () => {
   const intl = useIntl();
@@ -176,7 +174,7 @@ const Auth: FunctionComponent = () => {
                 <ul className={classnames(styles.oauth)}>
                   {oauthProviders.map((p) => (
                     <li className={classnames(styles.oauthItem)}>
-                      <OAuthButton provider={p} onClick={handleOathClick} />
+                      <OAuthButton provider={p} onClick={handleOathClick} variant={'icon'} />
                     </li>
                   ))}
                 </ul>
