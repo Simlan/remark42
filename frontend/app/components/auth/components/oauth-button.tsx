@@ -24,14 +24,18 @@ if (process.env.NODE_ENV === 'development') {
   Object.assign(OAUTH_ICONS, { dev: require('./assets/dev.svg').default as string });
 }
 
-type OAuthIconProps = {
+export type OAuthIconProps = {
+  variant: 'full' | 'name' | 'icon';
   onClick(evt: MouseEvent): void;
   provider: OAuthProvider;
 };
 
-const OAuthButton: FunctionComponent<OAuthIconProps> = ({ provider, onClick }) => {
+const OAuthButton: FunctionComponent<OAuthIconProps> = ({ provider, onClick, variant }) => {
   const intl = useIntl();
-  const [icon, setIcon] = useState<string | null>(null);
+
+  const [icon, setIcon] = useState<string>('');
+  const providerName = capitalizeFirstLetter(provider);
+  const title = intl.formatMessage(messages.buttonTitle);
 
   useEffect(() => {
     let mounted = true;
@@ -55,27 +59,29 @@ const OAuthButton: FunctionComponent<OAuthIconProps> = ({ provider, onClick }) =
     };
   }, [provider]);
 
-  if (icon === null) {
-    return null;
-  }
-
   return (
     <a
       target="_blank"
       rel="noopener noreferrer"
       href={`/auth/${provider}/login?from=${location}&site=${siteId}`}
       onClick={onClick}
-      className={classnames('oath-button', styles.root)}
-      title={`${intl.formatMessage(messages.buttonTitle)} ${capitalizeFirstLetter(provider)}`}
-      dangerouslySetInnerHTML={{ __html: icon }} // eslint-disable-line react/no-danger
-    />
+      className={classnames('oauth-button', styles.root, styles[variant])}
+      title={`${title} ${providerName}`}
+      data-provider-name={providerName}
+    >
+      <i
+        className={classnames('oauth-button-icon', styles.icon)}
+        role="presentation"
+        dangerouslySetInnerHTML={{ __html: icon }} // eslint-disable-line react/no-danger
+      />
+    </a>
   );
 };
 
 const messages = defineMessages({
   buttonTitle: {
-    id: 'oauth-button',
-    defaultMessage: 'Login via',
+    id: 'signin.oauth-button',
+    defaultMessage: 'Sign In with',
   },
 });
 
