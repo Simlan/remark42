@@ -23,7 +23,7 @@ export function verifyEmailSignin(token: string): Promise<User> {
   return authFetcher.get(EMAIL_SIGNIN_ENDPOINT, { token });
 }
 
-export function oauthSignin(url: string) {
+export function oauthSigninActor() {
   const REVALIDATION_TIMEOUT = 60 * 1000; // 1min
   let lastAttemptTime = Date.now();
   let authWindow: Window | null = null;
@@ -67,7 +67,7 @@ export function oauthSignin(url: string) {
     window.addEventListener('visibilitychange', handleVisibilityChange);
   })();
 
-  return function oauthSignin() {
+  return function oauthSignin(url: string) {
     authWindow = window.open(url);
     lastAttemptTime = Date.now();
   };

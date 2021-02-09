@@ -4,19 +4,59 @@ import { useIntl, FormattedMessage, MessageDescriptor } from 'react-intl';
 import classnames from 'classnames';
 import { useDispatch } from 'react-redux';
 
-import type { User } from 'common/types';
+import type { OAuthProvider, User } from 'common/types';
+import { signin } from 'store/user/actions';
 import Button from 'components/button';
-import capitalizeFirstLetter from 'utils/capitalize-first-letter';
 
 import messages from './auth.messsages';
 import { useDropdown } from './auth.hooks';
-import { anonymousSignin, emailSignin, oauthSignin, verifyEmailSignin } from './auth.api';
+import { anonymousSignin, emailSignin, oauthSigninActor, verifyEmailSignin } from './auth.api';
 import { getProviders, getTokenInvalidReason, getEmailInvalidReason, getUsernameInvalidReason } from './auth.utils';
 import InputField from './components/input-field';
 import OAuthButton from './components/oauth-button';
 
 import styles from './auth.module.css';
-import { signin } from 'store/user/actions';
+
+type OAuthProvidersProps = {
+  providers: OAuthProvider[];
+};
+
+function getButtonVariant(num: number) {
+  if (num === 2) {
+    return 'name';
+  }
+
+  if (num === 1) {
+    return 'full';
+  }
+
+  return 'icon';
+}
+
+const oauthSignin = oauthSigninActor();
+
+const OAuthProviders: FunctionComponent<OAuthProvidersProps> = ({ providers }) => {
+  const buttonVariant = getButtonVariant(providers.length);
+  const handleOathClick = (evt: MouseEvent) => {
+    const { href } = evt.currentTarget as HTMLAnchorElement;
+
+    evt.preventDefault();
+    oauthSignin(href);
+  };
+
+  return (
+    <>
+      <h5 className={styles.title}>Use Social Network</h5>
+      <ul className={classnames(styles.oauth)}>
+        {providers.map((p) => (
+          <li className={classnames(styles.oauthItem)}>
+            <OAuthButton provider={p} onClick={handleOathClick} variant={buttonVariant} />
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
 
 const Auth: FunctionComponent = () => {
   const intl = useIntl();
@@ -135,13 +175,8 @@ const Auth: FunctionComponent = () => {
     setShowTokenStep(false);
   };
 
-  const handleOathClick = (evt: MouseEvent) => {
-    const { href } = evt.currentTarget as HTMLAnchorElement;
-
-    evt.preventDefault();
-    oauthSignin(href);
-  };
-
+  const hasOAuthProviders = oauthProviders.length > 0;
+  const hasFormProviders = formProviders.length > 0;
   const buttonLabel = showTokenStep ? 'Verify' : 'Submit';
 
   return (
@@ -169,18 +204,10 @@ const Auth: FunctionComponent = () => {
             </>
           ) : (
             <>
-              <div className={styles.title}>Sign in</div>
-              {oauthProviders.length > 0 && (
-                <ul className={classnames(styles.oauth)}>
-                  {oauthProviders.map((p) => (
-                    <li className={classnames(styles.oauthItem)}>
-                      <OAuthButton provider={p} onClick={handleOathClick} variant={'icon'} />
-                    </li>
-                  ))}
-                </ul>
-              )}
+              {hasOAuthProviders && <OAuthProviders providers={oauthProviders} />}
+              {hasOAuthProviders && hasFormProviders && <div className={styles.divider} title="or" />}
               {formProviders.length === 1 ? (
-                <div className={styles.provider}>{capitalizeFirstLetter(formProviders[0])}</div>
+                <h5 className={styles.title}>{formProviders[0]}</h5>
               ) : (
                 <div className={styles.tabs}>
                   {formProviders.map((p) => (
@@ -193,7 +220,7 @@ const Auth: FunctionComponent = () => {
                         onChange={handleProviderChange}
                         checked={p === active}
                       />
-                      <span className={styles.providerName}>{capitalizeFirstLetter(p)}</span>
+                      <span className={styles.providerName}>{p.slice(0, 6)}</span>
                     </label>
                   ))}
                 </div>

@@ -65,12 +65,12 @@ const OAuthButton: FunctionComponent<OAuthIconProps> = ({ provider, onClick, var
       rel="noopener noreferrer"
       href={`/auth/${provider}/login?from=${location}&site=${siteId}`}
       onClick={onClick}
-      className={classnames('oauth-button', styles.root, styles[variant])}
+      className={classnames('oauth-button', styles.root, styles[variant], styles[provider])}
       title={`${title} ${providerName}`}
       data-provider-name={providerName}
     >
       <i
-        className={classnames('oauth-button-icon', styles.icon)}
+        className="oauth-button-icon"
         role="presentation"
         dangerouslySetInnerHTML={{ __html: icon }} // eslint-disable-line react/no-danger
       />
