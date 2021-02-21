@@ -12,12 +12,12 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const babelConfig = require('./.babelrc.js');
 
 const NODE_ID = 'remark42';
-const PUBLIC_PATH = '/web';
+const PUBLIC_PATH = '/web/';
 const PORT = process.env.PORT || 9000;
 const REMARK_API_BASE_URL = process.env.REMARK_API_BASE_URL || 'http://127.0.0.1:8080';
 const DEVSERVER_BASE_PATH = process.env.DEVSERVER_BASE_PATH || 'http://127.0.0.1:9000';
 const PUBLIC_FOLDER_PATH = path.resolve(__dirname, 'public');
-const CUSTOM_PROPERTIES_PATH = path.resolve(__dirname, './app/custom-properties.css');
+const CUSTOM_PROPERTIES_PATH = path.resolve(__dirname, './app/styles/custom-properties.css');
 
 /**
  * Generates excludes for babel-loader
@@ -78,15 +78,7 @@ module.exports = (_, { mode, analyze }) => {
     publicPath: PUBLIC_PATH,
   };
 
-  const optimization = {
-    chunkIds: 'named',
-    moduleIds: 'named',
-    splitChunks: {
-      minChunks: 3,
-    },
-  };
-
-  const getTsRule = (babelEnvConfig = {}) => {
+  const getTsRule = (babelConfig = {}) => {
     return {
       test: /\.tsx?$/,
       exclude: /node_modules/,
@@ -96,7 +88,7 @@ module.exports = (_, { mode, analyze }) => {
           options: {
             exclude,
             cacheDirectory: true,
-            ...babelEnvConfig,
+            ...babelConfig,
           },
         },
         {
@@ -183,13 +175,7 @@ module.exports = (_, { mode, analyze }) => {
     port: PORT,
     contentBase: PUBLIC_FOLDER_PATH,
     disableHostCheck: true,
-    historyApiFallback: true,
-    quiet: true,
-    inline: true,
     hot: true,
-    compress: true,
-    clientLogLevel: 'none',
-    overlay: false,
     stats: 'minimal',
     watchOptions: {
       ignored: [PUBLIC_FOLDER_PATH, path.resolve(__dirname, 'node_modules')],
@@ -201,7 +187,7 @@ module.exports = (_, { mode, analyze }) => {
   };
 
   const plugins = [
-    ...(isDev ? [new CleanWebpackPlugin(), new RefreshPlugin(), new webpack.HotModuleReplacementPlugin()] : []),
+    ...(isDev ? [new CleanWebpackPlugin(), new webpack.HotModuleReplacementPlugin(), new RefreshPlugin()] : []),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(mode),
       'process.env.REMARK_NODE': JSON.stringify(NODE_ID),
@@ -216,7 +202,6 @@ module.exports = (_, { mode, analyze }) => {
     entry,
     devtool: 'source-map',
     resolve,
-    optimization,
   };
 
   const legacyConfig = {
@@ -251,7 +236,13 @@ module.exports = (_, { mode, analyze }) => {
       chunkFilename: '[name].mjs',
     },
     module: {
-      rules: [getTsRule(babelConfig.env.modern), ...rules],
+      rules: [
+        getTsRule({
+          ...babelConfig.env.modern,
+          plugins: [...babelConfig.env.modern.plugins, ...(isDev ? ['@prefresh/babel-plugin'] : [])],
+        }),
+        ...rules,
+      ],
     },
     plugins: [
       ...plugins,
@@ -325,7 +316,12 @@ module.exports = (_, { mode, analyze }) => {
     devServer,
   };
 
+  if (isDev) {
+    return modernConfig;
+  }
+
   return [legacyConfig, modernConfig];
 };
+
 module.exports.CUSTOM_PROPERTIES_PATH = CUSTOM_PROPERTIES_PATH;
 module.exports.exclude = exclude;

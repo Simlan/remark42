@@ -1,0 +1,71 @@
+.root {
+  display: flex;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--x, #e2e8f0);
+  border-radius: 50%;
+
+  &::after {
+    display: inline-block;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+    border-color: var(--x, #cbd5e1);
+  }
+
+  &:active {
+    transform: scale(1);
+  }
+
+  & svg {
+    display: block;
+  }
+}
+
+:global(.dark) .root {
+  border-color: rgba(var(--white-color), 0.2);
+}
+
+.name,
+.full {
+  border-radius: 6px;
+  color: var(--x, #475569);
+  text-decoration: none;
+  width: auto;
+  padding: 0 12px;
+
+  &:hover {
+    transform: scale(1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &::after {
+    display: inline-block;
+    margin-left: 8px;
+    content: attr(data-provider-name);
+  }
+}
+
+:global(.dark) .name,
+:global(.dark) .full {
+  color: var(--color35);
+}
+
+.full::after {
+  content: attr(title);
+}
+
+.github {
+  color: var(--x, #000);
+}
+
+:global(.dark) .github {
+  color: rgb(var(--white-color));
+}
