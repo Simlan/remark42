@@ -1,14 +1,5 @@
 module.exports = {
-  extends: [
-    'react-app',
-    'preact',
-    'plugin:jsx-a11y/recommended',
-    'prettier',
-    'prettier/@typescript-eslint',
-    'prettier/babel',
-    'prettier/prettier',
-    'prettier/react',
-  ],
+  extends: ['react-app', 'preact', 'plugin:jsx-a11y/recommended', 'prettier'],
   plugins: ['jsx-a11y', 'prettier'],
   rules: {
     'prettier/prettier': 'error',
@@ -36,8 +27,6 @@ module.exports = {
       extends: ['react-app/jest'],
       rules: {
         'import/first': 'off',
-        // TODO: remove before merge into master
-        'jest/no-commented-out-tests': 'off',
       },
     },
   ],

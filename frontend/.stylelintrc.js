@@ -13,6 +13,7 @@ module.exports = {
       },
     ],
     'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global'] }],
+    'property-no-unknown': [true, { ignoreProperties: ['composes'] }],
     'mavrin/stylelint-declaration-use-css-custom-properties': {
       cssDefinitions: ['color'],
       ignoreProperties: ['/^\\$/'],
