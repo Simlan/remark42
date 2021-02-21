@@ -58,9 +58,13 @@ describe('user', () => {
     expect(dispatch).toBeCalledWith({
       type: USER_SET,
       user: {
-        id: 'john',
-        name: 'John',
+        name: 'Umputun',
+        id: '1',
+        picture: '',
         admin: true,
+        ip: '',
+        block: false,
+        verified: true,
       },
     });
   });
