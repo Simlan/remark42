@@ -3,6 +3,7 @@
   display: inline-flex;
   box-sizing: border-box;
   width: 100%;
+  /* stylelint-disable-next-line mavrin/stylelint-declaration-use-css-custom-properties */
   border: 1px solid transparent;
   padding: 7px 12px;
   margin: 0;
@@ -16,38 +17,40 @@
   white-space: nowrap;
   background-color: var(--color9);
   color: var(--color6);
-
-  &:hover {
-    background-color: var(--color33);
-  }
-
-  &:focus {
-    box-shadow: 0 0 0 2px var(--color47);
-    outline: none;
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: default;
-  }
-
-  &:hover:disabled {
-    background-color: var(--color9);
-  }
 }
 
 :global(.dark) .button {
+  /* stylelint-disable-next-line mavrin/stylelint-declaration-use-css-custom-properties */
   background-color: #117b74;
   border-color: rgba(var(--white-color), 0.25);
   color: var(--color16);
+}
 
-  &:hover {
-    background-color: var(--color9);
-  }
+.button:hover {
+  background-color: var(--color33);
+}
 
-  &:hover:disabled {
-    background-color: #117b74;
-  }
+.button:focus {
+  box-shadow: 0 0 0 2px var(--color47);
+  outline: none;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+:global(.dark) .button:hover {
+  background-color: var(--color9);
+}
+
+.button:hover:disabled {
+  background-color: var(--color9);
+}
+
+:global(.dark) .button :hover:disabled {
+  /* stylelint-disable-next-line mavrin/stylelint-declaration-use-css-custom-properties */
+  background-color: #117b74;
 }
 
 .suffix {
@@ -59,16 +62,17 @@
   margin-left: 12px;
   padding: 0 10px;
 
-  &:before {
+  &::before {
     position: absolute;
     left: 0;
     content: '';
     height: 36px;
+    /* stylelint-disable-next-line mavrin/stylelint-declaration-use-css-custom-properties */
     border-left: 1px solid rgba(255, 255, 255, 0.5);
   }
 }
 
-:global(.dark) .suffix:before {
+:global(.dark) .suffix::before {
   border-color: rgba(var(--white-color), 0.25);
 }
 

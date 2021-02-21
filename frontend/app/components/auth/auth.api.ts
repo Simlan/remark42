@@ -1,6 +1,5 @@
 import type { User } from 'common/types';
 
-import { getUser } from 'common/api';
 import { authFetcher } from 'common/fetcher';
 
 const EMAIL_SIGNIN_ENDPOINT = '/email/login';
@@ -24,9 +23,9 @@ export function verifyEmailSignin(token: string): Promise<User> {
 }
 
 export function oauthSigninActor() {
-  const REVALIDATION_TIMEOUT = 60 * 1000; // 1min
-  let lastAttemptTime = 0;
-  let authWindow: Window | null = null;
+  // const REVALIDATION_TIMEOUT = 60 * 1000; // 1min
+  // let lastAttemptTime = 0;
+  // let authWindow: Window | null = null;
 
   function handleWindowVisibilityChange() {
     if (!document.hasFocus() || document.hidden) {
@@ -39,8 +38,8 @@ export function oauthSigninActor() {
   window.addEventListener('focus', handleWindowVisibilityChange);
 
   return function oauthSignin(url: string) {
-    authWindow = window.open(url);
-    lastAttemptTime = Date.now();
+    // authWindow = window.open(url);
+    // lastAttemptTime = Date.now();
   };
 }
 

@@ -38,6 +38,7 @@
 
 :global(.dark) .input,
 :global(.dark) .input:-webkit-autofill {
+  /* stylelint-disable-next-line mavrin/stylelint-declaration-use-css-custom-properties */
   border-color: #575757;
   background-color: var(--color22);
   color: rgba(var(--white-color), 0.8);
@@ -45,6 +46,7 @@
   -webkit-text-fill-color: rgba(var(--white-color), 0.8);
 
   &:hover {
+    /* stylelint-disable-next-line mavrin/stylelint-declaration-use-css-custom-properties */
     border-color: #969696;
   }
 

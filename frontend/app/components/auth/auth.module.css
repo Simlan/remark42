@@ -14,10 +14,11 @@
   margin-left: 12px;
   height: 100%;
 
-  &:before {
+  &::before {
     position: absolute;
     content: '';
     height: 100%;
+    /* stylelint-disable-next-line mavrin/stylelint-declaration-use-css-custom-properties */
     border-left: 1px solid rgba(255, 255, 255, 0.5);
   }
 }
@@ -270,6 +271,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
