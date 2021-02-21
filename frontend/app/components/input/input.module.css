@@ -38,14 +38,14 @@
 
 :global(.dark) .input,
 :global(.dark) .input:-webkit-autofill {
-  border-color: rgba(var(--white-color), 0.2);
+  border-color: #575757;
   background-color: var(--color22);
   color: rgba(var(--white-color), 0.8);
   box-shadow: 0 0 0 1000px var(--color22) inset;
   -webkit-text-fill-color: rgba(var(--white-color), 0.8);
 
   &:hover {
-    border-color: rgba(var(--white-color), 0.5);
+    border-color: #969696;
   }
 
   &:focus {

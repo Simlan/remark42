@@ -78,14 +78,6 @@ module.exports = (_, { mode, analyze }) => {
     publicPath: PUBLIC_PATH,
   };
 
-  const optimization = {
-    chunkIds: 'named',
-    moduleIds: 'named',
-    splitChunks: {
-      minChunks: 3,
-    },
-  };
-
   const getTsRule = (babelConfig = {}) => {
     return {
       test: /\.tsx?$/,
@@ -183,13 +175,7 @@ module.exports = (_, { mode, analyze }) => {
     port: PORT,
     contentBase: PUBLIC_FOLDER_PATH,
     disableHostCheck: true,
-    historyApiFallback: true,
-    quiet: true,
-    inline: true,
     hot: true,
-    compress: true,
-    clientLogLevel: 'none',
-    overlay: true,
     stats: 'minimal',
     watchOptions: {
       ignored: [PUBLIC_FOLDER_PATH, path.resolve(__dirname, 'node_modules')],
@@ -216,7 +202,6 @@ module.exports = (_, { mode, analyze }) => {
     entry,
     devtool: 'source-map',
     resolve,
-    optimization,
   };
 
   const legacyConfig = {
@@ -331,7 +316,12 @@ module.exports = (_, { mode, analyze }) => {
     devServer,
   };
 
+  if (isDev) {
+    return modernConfig;
+  }
+
   return [legacyConfig, modernConfig];
 };
+
 module.exports.CUSTOM_PROPERTIES_PATH = CUSTOM_PROPERTIES_PATH;
 module.exports.exclude = exclude;

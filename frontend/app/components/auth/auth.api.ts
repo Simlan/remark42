@@ -25,50 +25,18 @@ export function verifyEmailSignin(token: string): Promise<User> {
 
 export function oauthSigninActor() {
   const REVALIDATION_TIMEOUT = 60 * 1000; // 1min
-  let lastAttemptTime = Date.now();
+  let lastAttemptTime = 0;
   let authWindow: Window | null = null;
 
-  (function userUpdater(): void {
-    let currentRequest: Promise<User | null> | null = null;
-
-    async function handleVisibilityChange(): Promise<void> {
-      if (!authWindow?.closed) {
-        console.log("auth haven't compleated");
-
-        return;
-      }
-
-      if (!window.navigator.onLine) {
-        console.log('offline');
-        return;
-      }
-
-      if (document.hidden) {
-        console.log('hidden');
-        return;
-      }
-
-      if (currentRequest) {
-        console.log('request in progress');
-      }
-      if (Date.now() - lastAttemptTime < REVALIDATION_TIMEOUT) {
-        // console.log(Date.now() - lastAttemptTime - REVALIDATION_TIMEOUT);
-        return;
-      }
-
-      const resetOnEnd = () => {
-        currentRequest = null;
-      };
-
-      console.log('Try to revalidate user');
-      currentRequest = getUser();
-      currentRequest.then(resetOnEnd).catch(resetOnEnd);
-      lastAttemptTime = Date.now();
+  function handleWindowVisibilityChange() {
+    if (!document.hasFocus() || document.hidden) {
+      return;
     }
+    console.log('in focus');
+  }
 
-    handleVisibilityChange();
-    window.addEventListener('visibilitychange', handleVisibilityChange);
-  })();
+  document.addEventListener('visibilitychange', handleWindowVisibilityChange);
+  window.addEventListener('focus', handleWindowVisibilityChange);
 
   return function oauthSignin(url: string) {
     authWindow = window.open(url);

@@ -5,12 +5,8 @@ const messages = defineMessages({
     id: 'auth.user-name',
     defaultMessage: 'Username',
   },
-  lengthLimit: {
-    id: 'auth.length-limit',
-    defaultMessage: 'Username must be at least 3 characters long',
-  },
-  symbolLimit: {
-    id: 'auth.symbol-limit',
+  symbolsRestriction: {
+    id: 'auth.symbols-restriction',
     defaultMessage: 'Username must contain only letters, numbers, underscores or spaces',
   },
   expiredToken: {

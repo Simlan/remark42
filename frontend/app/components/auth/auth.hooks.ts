@@ -3,8 +3,7 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 export function useDropdown(disableClosing?: boolean) {
   const rootRef = useRef<HTMLDivElement>(null);
   const [showDropdown, setShowDropdown] = useState(false);
-  const toggleDropdownState = (evt: Event) => {
-    evt.preventDefault();
+  const toggleDropdownState = () => {
     setShowDropdown((s) => !s);
   };
 

@@ -25,7 +25,6 @@ export const THEMES: Theme[] = ['light', 'dark'];
 export const IS_MOBILE = /Android|webOS|iPhone|iPad|iPod|Opera Mini|Windows Phone/i.test(navigator.userAgent);
 
 export const EMAIL_REGEXP = /[^@]+@[^.]+\..+/;
-
 /**
  * Defines if browser storage features (cookies, localsrotage)
  * are available or blocked via browser preferences
