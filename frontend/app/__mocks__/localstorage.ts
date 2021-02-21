@@ -1,5 +1,5 @@
 import 'jest-localstorage-mock';
 
-beforeEach(() => {
+afterEach(() => {
   localStorage.clear();
 });
