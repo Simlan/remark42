@@ -48,6 +48,7 @@
     "@mavrin/stylelint-declaration-use-css-custom-properties": "1.0.0-alpha.2",
     "@prefresh/webpack": "^3.0.0",
     "@size-limit/file": "^4.9.1",
+    "@svgr/webpack": "^5.5.0",
     "@types/classnames": "^2.2.11",
     "@types/enzyme": "^3.10.8",
     "@types/jest": "^26.0.19",

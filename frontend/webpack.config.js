@@ -160,7 +160,7 @@ module.exports = (_, { mode, analyze }) => {
   };
 
   const urlRule = {
-    test: /\.(png|jpg|jpeg|gif|svg)$/,
+    test: /\.(png|jpg|jpeg|gif)$/,
     exclude: /node_modules/,
     use: {
       loader: 'url-loader',
@@ -172,7 +172,12 @@ module.exports = (_, { mode, analyze }) => {
     },
   };
 
-  const rules = [cssRule, cssModulesRule, urlRule];
+  const svgRule = {
+    test: /\.svg$/,
+    use: ['@svgr/webpack', 'file-loader'],
+  };
+
+  const rules = [cssRule, cssModulesRule, svgRule, urlRule];
 
   const devServer = {
     port: PORT,
